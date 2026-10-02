@@ -1,0 +1,30 @@
+# Config files
+includes/config.php
+includes/config.php.tmp-*
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Backups
+*.bck
+
+# Logs
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Optional but recommended:
+.env
+.env.*
+
+cache/
+tmp/
+generated/
+
+.vscode/
+.idea/
+
+vendor/
