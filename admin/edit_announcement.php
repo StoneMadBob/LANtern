@@ -19,7 +19,7 @@ if (!$id) {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT id, title, body, created_at FROM announcements WHERE id = ?');
+$stmt = $pdo->prepare('SELECT id, title, body, category, created_at FROM announcements WHERE id = ?');
 $stmt->execute([$id]);
 $announcement = $stmt->fetch();
 
@@ -35,20 +35,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'The form expired. Please try again.';
     } else {
         $title = trim($_POST['title'] ?? '');
+        $category = trim($_POST['category'] ?? '');
         $body = sanitize_allowed_html(trim($_POST['body'] ?? ''));
 
-        if ($title === '' || $body === '') {
-            $error = 'Title and body are required.';
+        if ($title === '' || $category === '' || strlen($category) > 100 || $body === '') {
+            $error = 'Title, category (up to 100 characters), and body are required.';
         } else {
             $update = $pdo->prepare(
-                'UPDATE announcements SET title = ?, body = ? WHERE id = ?'
+                'UPDATE announcements SET title = ?, body = ?, category = ? WHERE id = ?'
             );
-            $update->execute([$title, $body, $id]);
+            $update->execute([$title, $body, $category, $id]);
             header('Location: manage_announcements.php?msg=Announcement updated successfully&type=success');
             exit;
         }
 
         $announcement['title'] = $title;
+        $announcement['category'] = $category;
         $announcement['body'] = $body;
     }
 }
@@ -66,6 +68,9 @@ ob_start();
 
     <label for="title">Title</label>
     <input id="title" type="text" name="title" maxlength="200" value="<?= announcement_escape($announcement['title']); ?>" required>
+
+    <label for="category">Category</label>
+    <input id="category" type="text" name="category" maxlength="100" value="<?= announcement_escape($announcement['category']); ?>" required>
 
     <label for="body">Body</label>
     <textarea id="body" name="body" rows="8" required><?= announcement_escape($announcement['body']); ?></textarea>

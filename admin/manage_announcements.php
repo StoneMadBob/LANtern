@@ -8,11 +8,19 @@ $csrfToken = csrf_token();
 
 // Handle add
 if (isset($_POST['add'])) {
-    $stmt = $pdo->prepare("INSERT INTO announcements (title, body) VALUES (?, ?)");
-    $stmt->execute([
-        $_POST['title'],
-        sanitize_allowed_html($_POST['body'])
-    ]);
+    if (!verify_csrf_token($_POST['csrf'] ?? '')) {
+        http_response_code(403);
+        exit('Invalid request token.');
+    }
+
+    $title = trim($_POST['title'] ?? '');
+    $category = trim($_POST['category'] ?? '');
+    $body = sanitize_allowed_html($_POST['body'] ?? '');
+
+    if ($title !== '' && $category !== '' && strlen($category) <= 100 && $body !== '') {
+        $stmt = $pdo->prepare("INSERT INTO announcements (title, body, category) VALUES (?, ?, ?)");
+        $stmt->execute([$title, $body, $category]);
+    }
 }
 
 // Handle delete
@@ -40,9 +48,14 @@ $content = '
 <h2>Manage Announcements</h2>
 
 <h3>Add New Announcement</h3>
-<form method="POST">
+<form method="POST" class="dw-form">
+    <input type="hidden" name="csrf" value="' . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . '">
+
     <label>Title</label><br>
     <input type="text" name="title" required><br><br>
+
+    <label>Category</label>
+    <input type="text" name="category" maxlength="100" placeholder="e.g. News, Website, Raspberry Pi" required>
 
     <label>Body</label><br>
     <textarea name="body" rows="5" required></textarea><br><br>
@@ -57,6 +70,7 @@ $content = '
 <tr>
     <th>Title</th>
     <th>Body</th>
+    <th>Category</th>
     <th>Posted</th>
     <th>Edit</th>
     <th>Delete</th>
@@ -68,7 +82,8 @@ foreach ($announcements as $a) {
     <tr>
         <td>".htmlspecialchars($a['title'])."</td>
         <td>".sanitize_allowed_html($a['body'])."</td>
-        <td>{$a['created_at']}</td>
+        <td>".htmlspecialchars($a['category'], ENT_QUOTES, 'UTF-8')."</td>
+        <td>".htmlspecialchars($a['created_at'], ENT_QUOTES, 'UTF-8')."</td>
         <td>
         <a href='edit_announcement.php?id={$a['id']}' class='dw-btn dw-btn-edit'>
             ✏️ Edit

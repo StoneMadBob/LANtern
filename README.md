@@ -54,6 +54,7 @@ Fresh installations use the complete schema in `sql/schema.sql`. For an existing
 4. `sql/migrations/004_add_device_active_issues_toggle.sql`
 5. `sql/migrations/005_add_upload_description.sql`
 6. `sql/migrations/006_rename_default_site.sql`
+7. `sql/migrations/007_add_announcement_categories.sql`
 
 The application does not run migrations automatically. Back up the database before applying schema changes.
 

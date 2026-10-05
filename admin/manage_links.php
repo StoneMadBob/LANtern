@@ -79,11 +79,11 @@ foreach ($links as $link) {
                         <td><?= htmlspecialchars($item['url']) ?></td>
                         <td><?= htmlspecialchars($item['host']) ?></td>
                         <td>
-                            <a href="edit_links.php?id=<?= $item['id'] ?>" class="dw-btn dw-btn-edit">✏ Edit</a>
+                            <a href="edit_links.php?id=<?= $item['id'] ?>" class="dw-btn dw-btn-edit">✏️ Edit</a>
                             <form action="delete_links.php" method="post" onsubmit="return confirm('Delete this link?');">
                                 <input type="hidden" name="id" value="<?= (int) $item['id']; ?>">
                                 <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
-                                <button type="submit" class="dw-btn dw-btn-delete">🗑 Delete</button>
+                                <button type="submit" class="dw-btn dw-btn-delete">🗑️ Delete</button>
                             </form>
 
                         </td>

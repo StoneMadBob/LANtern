@@ -126,11 +126,11 @@ foreach ($uploads as $u) {
         <td>{$filename}{$descriptionMarkup}</td>
         <td><a href='../{$path}'>Open upload</a></td>
         <td>{$uploadedAt}</td>
-        <td><a href='edit_upload.php?id={$id}' class='dw-btn dw-btn-edit'>Edit</a></td>
+        <td><a href='edit_upload.php?id={$id}' class='dw-btn dw-btn-edit'>✏️ Edit</a></td>
         <td>
             <form method='post' action='manage_uploads.php' onsubmit='return confirm(&quot;Delete this upload?&quot;);'>
                 <input type='hidden' name='csrf' value='{$csrfToken}'>
-                <button type='submit' name='delete' value='{$id}' class='dw-btn dw-btn-delete'>Delete</button>
+                <button type='submit' name='delete' value='{$id}' class='dw-btn dw-btn-delete'>🗑️ Delete</button>
             </form>
         </td>
     </tr>

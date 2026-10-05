@@ -460,28 +460,34 @@ body.dw-shell {
 
 .dw-announcements-table th:nth-child(1),
 .dw-announcements-table td:nth-child(1) {
-    width: 18%;
+    width: 16%;
 }
 
 .dw-announcements-table th:nth-child(2),
 .dw-announcements-table td:nth-child(2) {
-    width: 42%;
+    width: 32%;
 }
 
 .dw-announcements-table th:nth-child(3),
 .dw-announcements-table td:nth-child(3) {
-    width: 16%;
+    width: 14%;
 }
 
 .dw-announcements-table th:nth-child(4),
 .dw-announcements-table td:nth-child(4) {
-    width: 12%;
+    width: 10%;
     text-align: center;
 }
 
 .dw-announcements-table th:nth-child(5),
 .dw-announcements-table td:nth-child(5) {
-    width: 12%;
+    width: 10%;
+    text-align: center;
+}
+
+.dw-announcements-table th:nth-child(6),
+.dw-announcements-table td:nth-child(6) {
+    width: 18%;
     text-align: center;
 }
 
@@ -494,6 +500,29 @@ body.dw-shell {
     padding: 6px 8px;
     font-size: 12px;
     white-space: nowrap;
+}
+
+.dw-announcement-filters {
+    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.dw-announcement-filters > div {
+    min-width: 170px;
+}
+
+.dw-announcement-filters select {
+    width: auto;
+    min-width: 100%;
+    margin-bottom: 0;
+}
+
+.dw-announcement-filters .dw-btn {
+    margin-bottom: 0;
 }
 
 .dw-uploads-table th:nth-child(1),
