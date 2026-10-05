@@ -335,6 +335,41 @@ body.dw-shell {
     color: #bbb;
 }
 
+.dw-plugin-summary {
+    padding: 0 15px;
+}
+
+.dw-plugin-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid #333;
+}
+
+.dw-plugin-summary-details {
+    min-width: 0;
+}
+
+.dw-plugin-summary-details p {
+    margin: 6px 0 0;
+}
+
+.dw-plugin-summary-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (max-width: 640px) {
+    .dw-plugin-summary-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
 .dw-quick-actions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

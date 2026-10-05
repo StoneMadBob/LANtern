@@ -4,6 +4,7 @@ require_once 'includes/db.php';
 require_once 'includes/auth.php';
 require_once 'includes/ping.php';
 require_once 'includes/sanitize.php';
+require_once 'includes/plugins.php';
 
 ob_start(); // Start output buffering so layout.php can wrap the page
 
@@ -174,6 +175,10 @@ $role = $_SESSION['role'] ?? 'user';
 $isAdmin = $role === 'admin';
 $canEditContent = in_array($role, ['admin', 'editor'], true);
 $canManageKb = in_array($role, ['admin', 'editor', 'author'], true);
+$dashboardPlugins = array_values(array_filter(
+    get_dashboard_plugin_widgets($pdo),
+    static fn($plugin) => ($plugin['status'] ?? '') !== 'not-configured'
+));
 
 ?>
 
@@ -289,6 +294,34 @@ $canManageKb = in_array($role, ['admin', 'editor', 'author'], true);
                 <?php endforeach; ?>
             </ul>
         </div>
+    </section>
+<?php endif; ?>
+
+<?php if (!empty($dashboardPlugins)): ?>
+    <section class="dw-panel dw-plugin-summary">
+        <h3 class="dw-panel-title">Service Status</h3>
+        <?php foreach ($dashboardPlugins as $plugin): ?>
+            <?php
+            $pluginStatus = (string) ($plugin['status'] ?? 'unavailable');
+            $pluginLedStatus = in_array($pluginStatus, ['online', 'offline', 'maintenance'], true) ? $pluginStatus : 'offline';
+            ?>
+            <div class="dw-plugin-summary-row">
+                <div class="dw-plugin-summary-details">
+                    <strong>
+                        <?= htmlspecialchars((string) ($plugin['name'] ?? 'Plugin'), ENT_QUOTES, 'UTF-8'); ?>
+                        <span class="dw-status-led <?= htmlspecialchars($pluginLedStatus, ENT_QUOTES, 'UTF-8'); ?>" aria-hidden="true"></span>
+                        <small><?= htmlspecialchars(ucfirst(str_replace('-', ' ', $pluginStatus)), ENT_QUOTES, 'UTF-8'); ?></small>
+                    </strong>
+                    <p><?= htmlspecialchars((string) ($plugin['message'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></p>
+                </div>
+                <div class="dw-plugin-summary-actions">
+                    <a href="/plugin_stats.php" class="dw-btn dw-btn-edit">Full stats</a>
+                    <?php if (!empty($plugin['url'])): ?>
+                        <a href="<?= htmlspecialchars((string) $plugin['url'], ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener noreferrer">Open <?= htmlspecialchars((string) ($plugin['name'] ?? 'service'), ENT_QUOTES, 'UTF-8'); ?></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </section>
 <?php endif; ?>
 

@@ -11,6 +11,14 @@ LANtern is a PHP and MySQL intranet site for managing Homelabs. It contains devi
 - File uploads for JPG, PNG, GIF, PDF, DOCX, XLSX, PPTX, TXT, and CSV (5 MB maximum)
 - Upload descriptions, editable display names, and filters by type or extension
 - Admin tools for users and site settings
+- Optional dashboard integrations for Uptime Kuma and Proxmox
+- Compact service summaries on the dashboard with a separate full stats page
+
+## Dashboard Integrations
+
+Configure integrations under **Admin → Settings**. Uptime Kuma requires the instance base URL and the slug of a public status page. Proxmox requires the API URL and a dedicated API token with read-only node status permissions.
+
+The PHP server must be able to reach each integration directly. The dashboard shows a compact service summary below Active Issues; open **Full stats** or the service link to view monitor details or the upstream status page. See [plugins/README.md](plugins/README.md) for plugin behavior and security guidance.
 
 ## Requirements
 
