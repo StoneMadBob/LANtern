@@ -1,5 +1,7 @@
 # LANtern
 
+**Version:** `0.1.1-beta` (beta prerelease)
+
 LANtern is a PHP and MySQL intranet site for managing Homelabs. It contains device inventory, links, announcements, knowledge-base articles, and shared uploads. The application includes user accounts, role-based administration, login and signup rate limiting, and Cloudflare Turnstile support for account signup.
 
 ## Features
