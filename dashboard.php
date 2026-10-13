@@ -398,102 +398,105 @@ $dashboardPlugins = array_values(array_filter(
                                 <?= htmlspecialchars($item['ip']); ?>
                             </div>
 
-                            <?php if ($cardPingHistory): ?>
-                                <?php
-                                $chartWidth = 300;
-                                $chartHeight = 54;
-                                $historyStart = time() - 86400;
-                                $historyLatencies = [];
-                                foreach ($cardPingHistory as $sample) {
-                                    if ((int) $sample['success'] === 1 && $sample['latency_ms'] !== null) {
-                                        $historyLatencies[] = (float) $sample['latency_ms'];
-                                    }
+                            <?php
+                            $chartWidth = 300;
+                            $chartHeight = 54;
+                            $historyStart = time() - 86400;
+                            $historyLatencies = [];
+                            foreach ($cardPingHistory as $sample) {
+                                if ((int) $sample['success'] === 1 && $sample['latency_ms'] !== null) {
+                                    $historyLatencies[] = (float) $sample['latency_ms'];
                                 }
-                                $historyMaxLatency = $historyLatencies ? max($historyLatencies) : 0;
-                                $historyLatencyScale = max(10, ceil($historyMaxLatency / 10) * 10);
-                                $historySuccessCount = count(array_filter($cardPingHistory, static function ($sample) {
-                                    return (int) $sample['success'] === 1;
-                                }));
-                                $historyResponseRate = round(
-                                    $historySuccessCount / count($cardPingHistory) * 100,
-                                    1
-                                );
-                                ?>
-                                <div class="dw-device-ping-history">
-                                    <div class="dw-device-ping-summary">
-                                        <span>Ping · last 24 hours</span>
-                                        <span><?= htmlspecialchars((string) $historyResponseRate, ENT_QUOTES, 'UTF-8'); ?>% response</span>
-                                    </div>
-                                    <svg class="dw-device-ping-chart" viewBox="0 0 <?= $chartWidth; ?> <?= $chartHeight; ?>"
-                                         role="img" aria-label="Ping latency over the last 24 hours; red marks indicate no response.">
-                                        <line x1="0" y1="<?= $chartHeight - 3; ?>" x2="<?= $chartWidth; ?>"
-                                              y2="<?= $chartHeight - 3; ?>" class="dw-device-ping-baseline" />
-                                        <?php
-                                        $historySegments = [];
-                                        $historySegment = [];
-                                        $historyFailures = [];
-                                        foreach ($cardPingHistory as $sample) {
-                                            if ((int) $sample['success'] !== 1 || $sample['latency_ms'] === null) {
-                                                if ($historySegment) {
-                                                    $historySegments[] = $historySegment;
-                                                    $historySegment = [];
-                                                }
-                                                if ((int) $sample['success'] !== 1) {
-                                                    $historyFailures[] = $sample;
-                                                }
-                                                continue;
-                                            }
-
-                                            $pointX = max(0, min(
-                                                $chartWidth,
-                                                ((int) $sample['checked_timestamp'] - $historyStart) / 86400 * $chartWidth
-                                            ));
-                                            $pointY = 3 + (
-                                                1 - min((float) $sample['latency_ms'], $historyLatencyScale)
-                                                / $historyLatencyScale
-                                            ) * ($chartHeight - 10);
-                                            $historySegment[] = [
-                                                'x' => $pointX,
-                                                'y' => $pointY,
-                                                'sample' => $sample
-                                            ];
-                                        }
-                                        if ($historySegment) {
-                                            $historySegments[] = $historySegment;
-                                        }
-                                        ?>
-                                        <?php foreach ($historySegments as $points): ?>
-                                            <?php if (count($points) > 1): ?>
-                                                <polyline class="dw-device-ping-line" points="<?=
-                                                    htmlspecialchars(implode(' ', array_map(static function ($point) {
-                                                        return $point['x'] . ',' . $point['y'];
-                                                    }, $points)), ENT_QUOTES, 'UTF-8');
-                                                ?>" />
-                                            <?php endif; ?>
-                                            <?php foreach ($points as $point): ?>
-                                                <circle class="dw-device-ping-point" cx="<?= $point['x']; ?>"
-                                                        cy="<?= $point['y']; ?>" r="2">
-                                                    <title><?= date('H:i', (int) $point['sample']['checked_timestamp']); ?> ·
-                                                        <?= htmlspecialchars((string) $point['sample']['latency_ms'], ENT_QUOTES, 'UTF-8'); ?> ms</title>
-                                                </circle>
-                                            <?php endforeach; ?>
-                                        <?php endforeach; ?>
-                                        <?php foreach ($historyFailures as $sample): ?>
-                                            <?php
-                                            $failureX = max(0, min(
-                                                $chartWidth,
-                                                ((int) $sample['checked_timestamp'] - $historyStart) / 86400 * $chartWidth
-                                            ));
-                                            ?>
-                                            <path class="dw-device-ping-failure"
-                                                  d="M <?= $failureX - 2; ?> 44 L <?= $failureX + 2; ?> 50 M <?= $failureX + 2; ?> 44 L <?= $failureX - 2; ?> 50">
-                                                <title><?= date('H:i', (int) $sample['checked_timestamp']); ?> · No response</title>
-                                            </path>
-                                        <?php endforeach; ?>
-                                    </svg>
-                                    <div class="dw-device-ping-range"><span>24h ago</span><span>Now</span></div>
+                            }
+                            $historyMaxLatency = $historyLatencies ? max($historyLatencies) : 0;
+                            $historyLatencyScale = max(10, ceil($historyMaxLatency / 10) * 10);
+                            $historySuccessCount = count(array_filter($cardPingHistory, static function ($sample) {
+                                return (int) $sample['success'] === 1;
+                            }));
+                            $historyResponseRate = $cardPingHistory
+                                ? round($historySuccessCount / count($cardPingHistory) * 100, 1)
+                                : null;
+                            ?>
+                            <div class="dw-device-ping-history">
+                                <div class="dw-device-ping-summary">
+                                    <span>Ping · last 24 hours</span>
+                                    <span><?= $historyResponseRate === null
+                                        ? 'Waiting for first check'
+                                        : htmlspecialchars((string) $historyResponseRate, ENT_QUOTES, 'UTF-8') . '% response'; ?></span>
                                 </div>
-                            <?php endif; ?>
+                                <svg class="dw-device-ping-chart" viewBox="0 0 <?= $chartWidth; ?> <?= $chartHeight; ?>"
+                                     role="img" aria-label="Ping latency over the last 24 hours; red marks indicate no response.">
+                                    <line x1="0" y1="<?= $chartHeight - 3; ?>" x2="<?= $chartWidth; ?>"
+                                          y2="<?= $chartHeight - 3; ?>" class="dw-device-ping-baseline" />
+                                    <?php
+                                    $historySegments = [];
+                                    $historySegment = [];
+                                    $historyFailures = [];
+                                    foreach ($cardPingHistory as $sample) {
+                                        if ((int) $sample['success'] !== 1 || $sample['latency_ms'] === null) {
+                                            if ($historySegment) {
+                                                $historySegments[] = $historySegment;
+                                                $historySegment = [];
+                                            }
+                                            if ((int) $sample['success'] !== 1) {
+                                                $historyFailures[] = $sample;
+                                            }
+                                            continue;
+                                        }
+
+                                        $pointX = max(0, min(
+                                            $chartWidth,
+                                            ((int) $sample['checked_timestamp'] - $historyStart) / 86400 * $chartWidth
+                                        ));
+                                        $pointY = 3 + (
+                                            1 - min((float) $sample['latency_ms'], $historyLatencyScale)
+                                            / $historyLatencyScale
+                                        ) * ($chartHeight - 10);
+                                        $historySegment[] = [
+                                            'x' => $pointX,
+                                            'y' => $pointY,
+                                            'sample' => $sample
+                                        ];
+                                    }
+                                    if ($historySegment) {
+                                        $historySegments[] = $historySegment;
+                                    }
+                                    ?>
+                                    <?php foreach ($historySegments as $points): ?>
+                                        <?php if (count($points) > 1): ?>
+                                            <polyline class="dw-device-ping-line" points="<?=
+                                                htmlspecialchars(implode(' ', array_map(static function ($point) {
+                                                    return $point['x'] . ',' . $point['y'];
+                                                }, $points)), ENT_QUOTES, 'UTF-8');
+                                            ?>" />
+                                        <?php endif; ?>
+                                        <?php foreach ($points as $point): ?>
+                                            <circle class="dw-device-ping-point" cx="<?= $point['x']; ?>"
+                                                    cy="<?= $point['y']; ?>" r="2">
+                                                <title><?= date('H:i', (int) $point['sample']['checked_timestamp']); ?> ·
+                                                    <?= htmlspecialchars((string) $point['sample']['latency_ms'], ENT_QUOTES, 'UTF-8'); ?> ms</title>
+                                            </circle>
+                                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                    <?php foreach ($historyFailures as $sample): ?>
+                                        <?php
+                                        $failureX = max(0, min(
+                                            $chartWidth,
+                                            ((int) $sample['checked_timestamp'] - $historyStart) / 86400 * $chartWidth
+                                        ));
+                                        ?>
+                                        <path class="dw-device-ping-failure"
+                                              d="M <?= $failureX - 2; ?> 44 L <?= $failureX + 2; ?> 50 M <?= $failureX + 2; ?> 44 L <?= $failureX - 2; ?> 50">
+                                            <title><?= date('H:i', (int) $sample['checked_timestamp']); ?> · No response</title>
+                                        </path>
+                                    <?php endforeach; ?>
+                                </svg>
+                                <?php if (!$cardPingHistory): ?>
+                                    <div class="dw-device-ping-range"><span>No ping history yet</span><span>24h</span></div>
+                                <?php else: ?>
+                                    <div class="dw-device-ping-range"><span>24h ago</span><span>Now</span></div>
+                                <?php endif; ?>
+                            </div>
 
                             <div class="dw-device-actions">
                                 <a href="/admin/device.php?id=<?= $item['id']; ?>" class="dw-btn dw-btn-edit">
