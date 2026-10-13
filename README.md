@@ -7,6 +7,7 @@ LANtern is a PHP and MySQL intranet site for managing Homelabs. It contains devi
 ## Features
 
 - Dashboard with device status and active issues
+- Scheduled five-minute device ping history with per-device latency graphs
 - Device inventory and administration
 - Grouped links and announcements
 - Knowledge base with article management
@@ -55,8 +56,21 @@ Fresh installations use the complete schema in `sql/schema.sql`. For an existing
 5. `sql/migrations/005_add_upload_description.sql`
 6. `sql/migrations/006_rename_default_site.sql`
 7. `sql/migrations/007_add_announcement_categories.sql`
+8. `sql/migrations/008_add_ping_history.sql`
 
 The application does not run migrations automatically. Back up the database before applying schema changes.
+
+## Device Ping History
+
+The dashboard's live-status cards show a compact graph of ping latency and failed responses over the last 24 hours. The device detail page shows a larger graph and response-rate summary. To collect history, schedule `scripts/collect_ping_history.php` to run every five minutes. The collector uses each device's IP address, or its hostname when no IP is set, and retains the most recent 30 days of results.
+
+On Linux, add a cron entry using the absolute paths to the PHP CLI executable and this project:
+
+```cron
+*/5 * * * * /usr/bin/php /path/to/LANtern/scripts/collect_ping_history.php
+```
+
+On Windows, create a Task Scheduler task with a five-minute repetition interval and set the duration to **Indefinitely**. Set the action to start `php.exe` and pass the full path to `scripts\collect_ping_history.php` as its argument. Ensure the PHP CLI and web server use the same `includes/config.php`, and that the PHP process can run the system `ping` command.
 
 ## Roles
 

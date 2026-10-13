@@ -458,6 +458,63 @@ body.dw-shell {
     text-align: right;
 }
 
+.dw-ping-chart {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+    background: #202020;
+    border: 1px solid #333;
+    border-radius: 6px;
+}
+
+.dw-ping-gridline {
+    stroke: #444;
+    stroke-width: 1;
+}
+
+.dw-ping-axis {
+    fill: #bbb;
+    font-size: 12px;
+}
+
+.dw-ping-line {
+    fill: none;
+    stroke: #66aaff;
+    stroke-width: 2;
+}
+
+.dw-ping-point {
+    fill: #66aaff;
+}
+
+.dw-ping-failure {
+    fill: none;
+    stroke: #ff6262;
+    stroke-width: 2;
+}
+
+.dw-ping-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #bbb;
+    font-size: 0.9rem;
+}
+
+.dw-ping-legend-line {
+    width: 18px;
+    border-top: 2px solid #66aaff;
+}
+
+.dw-ping-legend-failure {
+    width: 10px;
+    height: 10px;
+    margin-left: 8px;
+    background: #ff6262;
+    transform: rotate(45deg);
+}
+
 .dw-announcements-table th:nth-child(1),
 .dw-announcements-table td:nth-child(1) {
     width: 16%;
@@ -899,6 +956,54 @@ body.dw-shell {
     font-size: 0.9rem;
     color: #aaa;
     margin-bottom: 12px;
+}
+
+.dw-device-ping-history {
+    margin: 0 0 14px;
+    padding: 9px 10px 6px;
+    border: 1px solid #383838;
+    border-radius: 4px;
+    background: #1a1a1a;
+}
+
+.dw-device-ping-summary,
+.dw-device-ping-range {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-size: 0.78rem;
+}
+
+.dw-device-ping-chart {
+    display: block;
+    width: 100%;
+    height: 48px;
+    margin-top: 5px;
+}
+
+.dw-device-ping-baseline {
+    stroke: #444;
+    stroke-width: 1;
+}
+
+.dw-device-ping-line {
+    fill: none;
+    stroke: #66aaff;
+    stroke-width: 1.5;
+}
+
+.dw-device-ping-point {
+    fill: #66aaff;
+}
+
+.dw-device-ping-failure {
+    fill: none;
+    stroke: #ff6262;
+    stroke-width: 1.5;
+}
+
+.dw-device-ping-range {
+    font-size: 0.68rem;
 }
 
 /* Notes */
