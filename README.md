@@ -38,30 +38,19 @@ There is no Composer or frontend package installation step.
 
 1. Place the project in the web server's document root. The application uses root-relative URLs, so it should be served from the domain root.
 2. Ensure the web server can write to `includes/` and `uploads/`.
-3. Open `/install.php` in a browser and provide the database connection details and first administrator account. The installer creates the database if it does not already exist and the database user has permission to do so.
+3. Open `/install.php` in a browser and provide the database connection details and first administrator account. A fresh install is allowed only when the selected database is empty; the installer will not replace data in a database that already contains tables.
 4. After installation completes, remove `install.php` from the deployed site.
 5. Sign in with the administrator account created during setup. Configure the site name and Cloudflare Turnstile keys in **Admin → Settings**.
 
 Signup requires valid Turnstile site and secret keys. Until they are configured, an administrator can create accounts through **Admin → Manage Users**.
 
-The installer writes database credentials to `includes/config.php`. This file is ignored by Git; do not commit or publish it.
+The installer writes database credentials to `includes/config.php` and an installation lock to `includes/install.lock`. Both are ignored by Git; do not commit or publish the configuration file. The lock prevents the installer from performing another fresh install, but existing installations can still use it to apply database upgrades.
 
 ## Existing Databases
 
-Fresh installations use the complete schema in `sql/schema.sql`. For an existing database, apply only migrations that have not already been run, in numerical order, using a database administration tool or MySQL client:
+Fresh installations use the complete schema in `sql/schema.sql`. For an existing installation, deploy the updated files and open `/install.php`. If `includes/config.php` is present, the installer identifies the site as an upgrade, detects migrations already applied, and offers to apply only pending migrations in numerical order. Older installations without migration history are checked against their current tables and columns before migrations are recorded or run.
 
-1. `sql/migrations/001_add_editor_author_roles.sql`
-2. `sql/migrations/002_add_signup_rate_limiting.sql`
-3. `sql/migrations/003_add_login_rate_limiting.sql`
-4. `sql/migrations/004_add_device_active_issues_toggle.sql`
-5. `sql/migrations/005_add_upload_description.sql`
-6. `sql/migrations/006_rename_default_site.sql`
-7. `sql/migrations/007_add_announcement_categories.sql`
-8. `sql/migrations/008_add_ping_history.sql`
-9. `sql/migrations/009_add_speedtest_history.sql`
-10. `sql/migrations/010_add_speedtest_test_type.sql`
-
-The application does not run migrations automatically. Back up the database before applying schema changes.
+Back up the database before applying schema changes. Migrations are not run just by opening the installer; review the listed updates and explicitly submit the upgrade form. An existing database without `includes/config.php` is never treated as a fresh install: restore its configuration or select an empty database.
 
 ## Device Ping History
 

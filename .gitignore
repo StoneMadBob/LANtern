@@ -1,6 +1,8 @@
 # Config files
 includes/config.php
 includes/config.php.tmp-*
+includes/install.lock
+includes/.install.guard
 
 # Uploads
 uploads/*
