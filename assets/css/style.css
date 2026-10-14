@@ -515,6 +515,276 @@ body.dw-shell {
     transform: rotate(45deg);
 }
 
+.dw-speedtest-chart {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    background: #202020;
+    border: 1px solid #333;
+    border-radius: 6px;
+}
+
+.dw-speedtest-page {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dw-speedtest-page > h1 {
+    margin: 0 0 8px;
+}
+
+.dw-speedtest-page > p {
+    margin: 0 0 20px;
+    color: #bbb;
+    line-height: 1.5;
+}
+
+.dw-speedtest-page > h2,
+.dw-speedtest-recent h2 {
+    margin: 28px 0 14px;
+}
+
+.dw-speedtest-latest {
+    padding: 22px;
+    margin: 22px 0 30px;
+    overflow: visible;
+}
+
+.dw-speedtest-latest h2 {
+    margin: 0 0 18px;
+}
+
+.dw-speedtest-latest > p {
+    margin: 18px 0 0;
+    color: #bbb;
+    line-height: 1.6;
+}
+
+.dw-speedtest-latest a {
+    color: #8bc1ff;
+}
+
+.dw-speedtest-chart-section {
+    padding: 18px;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 6px;
+}
+
+.dw-speedtest-gridline {
+    stroke: #444;
+    stroke-width: 1;
+}
+
+.dw-speedtest-axis {
+    fill: #bbb;
+    font-size: 12px;
+}
+
+.dw-speedtest-download {
+    fill: none;
+    stroke: #66aaff;
+    stroke-width: 2;
+}
+
+.dw-speedtest-upload {
+    fill: none;
+    stroke: #5bd69a;
+    stroke-width: 2;
+}
+
+circle.dw-speedtest-download {
+    fill: #66aaff;
+}
+
+circle.dw-speedtest-upload {
+    fill: #5bd69a;
+}
+
+.dw-speedtest-failure {
+    fill: none;
+    stroke: #ff6262;
+    stroke-width: 2;
+}
+
+.dw-speedtest-legend,
+.dw-speedtest-run-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: #bbb;
+}
+
+.dw-speedtest-run-form {
+    margin: 18px 0;
+}
+
+.dw-speedtest-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 22px;
+    padding: 14px 16px;
+    border: 1px solid #3a6ea5;
+    border-radius: 6px;
+    background: #202b36;
+    color: #e0eaf5;
+    line-height: 1.5;
+}
+
+.dw-speedtest-progress[hidden] {
+    display: none;
+}
+
+.dw-speedtest-spinner {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border: 3px solid #61788f;
+    border-top-color: #8bc1ff;
+    border-radius: 50%;
+    animation: dw-speedtest-spin 0.8s linear infinite;
+}
+
+@keyframes dw-speedtest-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.dw-speedtest-legend-download,
+.dw-speedtest-legend-upload {
+    width: 18px;
+    border-top: 2px solid #66aaff;
+}
+
+.dw-speedtest-legend-upload {
+    border-color: #5bd69a;
+}
+
+.dw-speedtest-legend-failure {
+    width: 10px;
+    height: 10px;
+    margin-left: 8px;
+    background: #ff6262;
+    transform: rotate(45deg);
+}
+
+.dw-speedtest-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.dw-speedtest-stats > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 16px;
+    background: #1a1a1a;
+    border: 1px solid #383838;
+    border-radius: 4px;
+}
+
+.dw-speedtest-stats strong {
+    color: #fff;
+    font-size: 1.4rem;
+}
+
+.dw-speedtest-stats span {
+    color: #aaa;
+    font-size: 0.85rem;
+}
+
+.dw-speedtest-recent {
+    margin-top: 32px;
+}
+
+.dw-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #383838;
+    border-radius: 6px;
+}
+
+.dw-speedtest-table {
+    min-width: 840px;
+    table-layout: auto;
+    background: #202020;
+}
+
+.dw-speedtest-table th,
+.dw-speedtest-table td {
+    width: auto;
+    padding: 12px 14px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.dw-speedtest-table th:nth-child(n),
+.dw-speedtest-table td:nth-child(n) {
+    width: auto;
+}
+
+.dw-speedtest-table th {
+    background: #292929;
+    color: #eee;
+    white-space: nowrap;
+}
+
+.dw-speedtest-table td:first-child,
+.dw-speedtest-table td:nth-child(2),
+.dw-speedtest-table td:nth-child(3),
+.dw-speedtest-table td:nth-child(4) {
+    white-space: nowrap;
+}
+
+.dw-speedtest-table td:last-child {
+    min-width: 180px;
+}
+
+.dw-speedtest-type {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.dw-speedtest-type.manual {
+    background: #294a68;
+    color: #c7e2ff;
+}
+
+.dw-speedtest-type.automatic {
+    background: #28533e;
+    color: #c6f3d9;
+}
+
+@media (max-width: 640px) {
+    .dw-speedtest-page > h2,
+    .dw-speedtest-recent h2 {
+        margin-top: 22px;
+    }
+
+    .dw-speedtest-latest,
+    .dw-speedtest-chart-section {
+        padding: 14px;
+    }
+
+    .dw-speedtest-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .dw-speedtest-stats > div {
+        padding: 12px;
+    }
+}
+
 .dw-announcements-table th:nth-child(1),
 .dw-announcements-table td:nth-child(1) {
     width: 16%;

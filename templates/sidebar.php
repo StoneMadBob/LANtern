@@ -2,6 +2,7 @@
     <nav>
         <ul>
             <li><a href="/dashboard.php">Dashboard</a></li>
+            <li><a href="/speedtest.php">Speed Test</a></li>
             <li><a href="/links.php">Links</a></li>
             <li><a href="/announcements.php">Announcements</a></li>
             <li><a href="/kb.php">Knowledge Base</a></li>

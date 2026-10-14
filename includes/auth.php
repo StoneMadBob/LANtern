@@ -22,11 +22,26 @@ function require_login() {
 }
 
 /**
+ * Check whether a redirect target is a safe path on this site
+ */
+function is_safe_redirect_target($target) {
+    return is_string($target)
+        && str_starts_with($target, '/')
+        && !str_starts_with($target, '//')
+        && !str_contains($target, '\\')
+        && !preg_match('/[\x00-\x1F\x7F]/', $target);
+}
+
+/**
  * Require one of the supplied roles
  */
 function require_roles(array $roles) {
+    if (!is_logged_in()) {
+        require_login();
+    }
+
     if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $roles, true)) {
-        header("Location: /login.php");
+        header('Location: /dashboard.php');
         exit;
     }
 }

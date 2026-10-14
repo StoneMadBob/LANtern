@@ -5,6 +5,7 @@ includes/config.php.tmp-*
 # Uploads
 uploads/*
 !uploads/.gitkeep
+!uploads/.htaccess
 
 # Backups
 *.bck

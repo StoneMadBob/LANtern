@@ -9,6 +9,11 @@ if (isset($_SESSION['user_id'])) {
     exit;
 }
 
+$redirectTarget = $_GET['redirect'] ?? '';
+if (!is_string($redirectTarget)) {
+    $redirectTarget = '';
+}
+
 if (empty($_SESSION['login_csrf'])) {
     $_SESSION['login_csrf'] = bin2hex(random_bytes(32));
 }
@@ -63,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
 
-            $redirect = $_GET['redirect'] ?? '';
-            if ($redirect !== '' && str_starts_with($redirect, '/') && !str_starts_with($redirect, '//')) {
+            $redirect = $_POST['redirect'] ?? $redirectTarget;
+            if (is_safe_redirect_target($redirect)) {
                 header('Location: ' . $redirect);
             } else {
                 header('Location: dashboard.php');
@@ -89,7 +94,7 @@ ob_start();
 ?>
 <h2>Login</h2>
 
-<?php if (!empty($_GET['redirect'])): ?>
+<?php if ($redirectTarget !== ''): ?>
     <p class="dw-info">Please log in to continue.</p>
 <?php endif; ?>
 
@@ -99,6 +104,7 @@ ob_start();
 
 <form method="post" class="dw-form">
     <input type="hidden" name="csrf" value="<?= login_escape($_SESSION['login_csrf']); ?>">
+    <input type="hidden" name="redirect" value="<?= login_escape($redirectTarget); ?>">
 
     <label for="username">Username</label>
     <input id="username" type="text" name="username" value="<?= login_escape($username); ?>" required autocomplete="username">

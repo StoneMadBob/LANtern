@@ -30,6 +30,7 @@ $uptimeKumaSlug = get_app_setting($pdo, 'plugin_uptime_kuma_slug');
 $proxmoxUrl = get_app_setting($pdo, 'plugin_proxmox_url');
 $proxmoxTokenId = get_app_setting($pdo, 'plugin_proxmox_token_id');
 $existingProxmoxTokenSecret = get_app_setting($pdo, 'plugin_proxmox_token_secret');
+$speedtestIntervalHours = get_app_setting($pdo, 'speedtest_interval_hours', '24');
 $validateIntegrationUrl = static function (string $url): bool {
     if ($url === '') {
         return true;
@@ -56,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $proxmoxUrl = trim($_POST['proxmox_url'] ?? $proxmoxUrl);
         $proxmoxTokenId = trim($_POST['proxmox_token_id'] ?? $proxmoxTokenId);
         $proxmoxTokenSecret = trim($_POST['proxmox_token_secret'] ?? '');
+        $speedtestIntervalHours = trim($_POST['speedtest_interval_hours'] ?? $speedtestIntervalHours);
 
         if ($turnstileSecretKey === '') {
             $turnstileSecretKey = $existingTurnstileSecretKey;
@@ -66,6 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($siteName === '') {
             $error = 'Site name is required.';
+        } elseif (!in_array($speedtestIntervalHours, ['0', '1', '3', '6', '12', '24'], true)) {
+            $error = 'Choose a valid Ookla Speedtest interval.';
         } elseif (!$validateIntegrationUrl($uptimeKumaUrl) || !$validateIntegrationUrl($proxmoxUrl)) {
             $error = 'Integration URLs must be valid HTTP or HTTPS URLs without credentials, query strings, or fragments.';
         } elseif ($uptimeKumaSlug !== '' && !preg_match('/^[A-Za-z0-9_-]+$/', $uptimeKumaSlug)) {
@@ -81,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             save_app_setting($pdo, 'plugin_proxmox_url', $proxmoxUrl);
             save_app_setting($pdo, 'plugin_proxmox_token_id', $proxmoxTokenId);
             save_app_setting($pdo, 'plugin_proxmox_token_secret', $proxmoxTokenSecret);
+            save_app_setting($pdo, 'speedtest_interval_hours', $speedtestIntervalHours);
             $message = 'Settings saved successfully.';
         }
     }
@@ -123,6 +128,18 @@ ob_start();
 
         <label for="turnstile_secret_key">Turnstile secret key</label>
         <input id="turnstile_secret_key" type="password" name="turnstile_secret_key" placeholder="Leave blank to keep the current key">
+
+        <h4>Ookla Speedtest</h4>
+        <label for="speedtest_interval_hours">Scheduled test interval</label>
+        <select id="speedtest_interval_hours" name="speedtest_interval_hours">
+            <option value="0" <?= $speedtestIntervalHours === '0' ? 'selected' : ''; ?>>Disabled (manual tests only)</option>
+            <?php foreach (['1', '3', '6', '12', '24'] as $hours): ?>
+                <option value="<?= $hours; ?>" <?= $speedtestIntervalHours === $hours ? 'selected' : ''; ?>>
+                    Every <?= $hours; ?> hour<?= $hours === '1' ? '' : 's'; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <p>Scheduled speed tests consume significant bandwidth. Install Ookla Speedtest CLI on the server and schedule its collector as described in the README.</p>
 
         <button type="submit" class="dw-btn dw-btn-primary">Save Settings</button>
     </form>

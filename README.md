@@ -8,6 +8,7 @@ LANtern is a PHP and MySQL intranet site for managing Homelabs. It contains devi
 
 - Dashboard with device status and active issues
 - Scheduled five-minute device ping history with per-device latency graphs
+- Manual and scheduled Ookla Speedtest results with a configurable history graph
 - Device inventory and administration
 - Grouped links and announcements
 - Knowledge base with article management
@@ -57,6 +58,8 @@ Fresh installations use the complete schema in `sql/schema.sql`. For an existing
 6. `sql/migrations/006_rename_default_site.sql`
 7. `sql/migrations/007_add_announcement_categories.sql`
 8. `sql/migrations/008_add_ping_history.sql`
+9. `sql/migrations/009_add_speedtest_history.sql`
+10. `sql/migrations/010_add_speedtest_test_type.sql`
 
 The application does not run migrations automatically. Back up the database before applying schema changes.
 
@@ -71,6 +74,20 @@ On Linux, add a cron entry using the absolute paths to the PHP CLI executable an
 ```
 
 On Windows, create a Task Scheduler task with a five-minute repetition interval and set the duration to **Indefinitely**. Set the action to start `php.exe` and pass the full path to `scripts\collect_ping_history.php` as its argument. Ensure the PHP CLI and web server use the same `includes/config.php`, and that the PHP process can run the system `ping` command.
+
+## Ookla Speed Test
+
+The **Speed Test** page is publicly viewable without signing in. It shows download/upload/ping results and graphs successful tests from the last 30 days. Only administrators can run a test manually; scheduled tests are configurable under **Admin → Settings** (manual only, or every 1, 3, 6, 12, or 24 hours). Speed tests can use significant bandwidth.
+
+Install either the official [Ookla Speedtest CLI](https://www.speedtest.net/apps/cli) or Python's [`speedtest-cli`](https://github.com/sivel/speedtest-cli) on the LANtern server. LANtern detects the CLI variant and uses its corresponding JSON output format. Ensure the `speedtest` executable is available on the PATH of both the web-server PHP account and PHP CLI account.
+
+Schedule `scripts/collect_speedtest.php` to run every five minutes; it checks the configured interval and only runs Ookla when a test is due. For Linux, use cron:
+
+```cron
+*/5 * * * * /usr/bin/php /path/to/LANtern/scripts/collect_speedtest.php
+```
+
+On Windows, create a Task Scheduler task repeating every five minutes indefinitely. Set the action to the PHP CLI executable and pass the full path to `scripts\collect_speedtest.php`. The PHP CLI and web server need access to the same `includes/config.php`. Results are retained for 90 days in the database, while the page graphs the last 30 days.
 
 ## Roles
 
